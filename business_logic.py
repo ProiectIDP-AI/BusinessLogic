@@ -7,50 +7,8 @@ import requests
 import json
 
 app = Flask(__name__)
-r = Redis(host=os.getenv('REDIS_HOST'), port=int(os.getenv('REDIS_PORT')), decode_responses=True)
 url_auth = "http://auth:6000/auth/decode_token"  # Replace with your actual server URL
 url_io = "http://io:5000/io"  # Replace with your actual server URL
-
-r.set('admin_id', 0)
-r.set('comp_id', 0)
-r.set('emp_id', 0)
-r.set('book_id', 0)
-r.hset('admin', mapping={
-	'id': 0,
-	'name': 'admin'
-})
-
-def get_new_id(id_type: str) -> str:
-	"""The function finds the next unused id and increments the global counter
-	Args:
-		id_type (str): The name of the type of id we want to get
-
-	Returns:
-		int: An unique ID
-	"""
-
-	new_id = id_type + '_' + str(r.incr(id_type))
-
-	# If the id already exists, then we skip it
-	while len(r.hgetall(new_id)) > 0:
-		new_id = id_type + '_' + str(r.incr(id_type))
-
-	return new_id
-
-
-def decode_id(id: str) -> int:
-	"""We keep the ids encoded, so that a city can have the same ID as a
-		country for example, but in the database to have 2 separate keys.
-		This function retrieves the number that is the ID.
-
-	Args:
-		id (str): The ID as it is in the database
-
-	Returns:
-		int: The actual ID of the entry
-	"""
-
-	return int(id.split('_')[2])
 
 
 @app.route("/bl/company", methods=["POST"])
@@ -150,72 +108,24 @@ def delete_company(company_id):
 	return jsonify({'message': response.text}), response.status_code
 
 
-@app.route('/bl/admin', methods=['POST'])
-def create_admin():
-	data = {
-		"client_type": "admin",
-		"id": "None"
-	}
-
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
-	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
-
-	url_io_admin = url_io + '/admin'
-	response = requests.post(url_io_admin, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
-
-
-@app.route('/bl/admin/<string:id>', methods=['GET'])
-def get_admin(id):
-	data = {
-		"client_type": "admin",
-		"id": "None"
-	}
-
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
-	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
-
-	url_io_admin = url_io + '/admin/' + id
-	response = requests.get(url_io_admin, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
-
-
-@app.route('/bl/admin/<string:id>', methods=['PUT'])
-def update_admin(id):
-	data = {
-		"client_type": "admin",
-		"id": "None"
-	}
-
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
-	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
-
-	url_io_admin = url_io + '/admin/' + id
-	response = requests.put(url_io_admin, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
-
-
 @app.route('/bl/employee', methods=['POST'])
 def create_employee():
-	data = {
-		"client_type": "company",
-		"id": "None"
-	}
-
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
-	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
-
 	payload = request.get_json()
 
 	if not 'first_name' in payload  \
  		or not 'last_name' in payload or not 'email' \
- 		or not 'email' in payload or not 'phone_number' \
+ 		or not 'phone_number' \
 		in payload or not 'id_comp' in payload:
 		return jsonify({'status': 'BAD REQUEST'}), 400
+
+	data = {
+		"client_type": "company",
+		"id": payload['id_comp']
+	}
+
+	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	if response.status_code != 200:
+		return jsonify({'message': response.text}), 401
 
 	url_io_emp = url_io + '/employee'
 	response = requests.post(url_io_emp, headers=request.headers, data=request.data)
@@ -254,6 +164,29 @@ def get_all_employees():
 	return jsonify({'message': response.text}), response.status_code
 
 
+@app.route('/bl/employee/company/<string:company_id>', methods=["GET"])
+def get_employees_for_comp(company_id):
+	data = {
+		"client_type": "company",
+		"id": company_id
+	}
+
+	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	if response.status_code != 200:
+		return jsonify({'message': response.text}), 401
+
+	url_io_emp = url_io + '/employee'
+	response = requests.get(url_io_emp, headers=request.headers, data=request.data)
+	emps = response.json()
+	comp_emps = []
+
+	for emp in emps:
+		if emp['id_comp'] == company_id:
+			comp_emps.append(emp)
+
+	return jsonify({'message': comp_emps}), response.status_code
+
+
 @app.route('/bl/employee/<string:id>', methods=['PUT'])
 def update_employee(id):
 	data = {
@@ -273,8 +206,8 @@ def update_employee(id):
 @app.route('/bl/employee/<string:id>', methods=['DELETE'])
 def delete_employee(id):
 	data = {
-		"client_type": "employee",
-		"id": id
+		"client_type": "admin",
+		"id": "None"
 	}
 
 	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
@@ -293,14 +226,21 @@ def add_active_book(id):
 		"id": id
 	}
 
+	if 'book_id' not in request.get_json():
+		return jsonify({'message': 'Book id missing'}), 401
+
 	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
-	url_io_emp = url_io + '/employee/' + id + '/books/active'
-	response = requests.post(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	url_io_book = url_io + '/employee/' + id + '/books/wishlist'
+	response = requests.delete(url_io_book, headers=request.headers, data=request.data)
+	if response.status_code != 200:
+		return jsonify({'message': response.text}), 401
 
+	url_io_book = url_io + '/employee/' + id + '/books/active'
+	response = requests.post(url_io_book, headers=request.headers, data=request.data)
+	return jsonify({'message': response.text}), response.status_code
 
 
 @app.route('/bl/employee/<string:id>/books/wishlist', methods=['POST'])
@@ -309,6 +249,9 @@ def add_wishlist_book(id):
 		"client_type": "employee_only",
 		"id": id
 	}
+
+	if 'book_id' not in request.get_json():
+		return jsonify({'message': 'Book id missing'}), 401
 
 	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
 	if response.status_code != 200:
@@ -326,12 +269,31 @@ def add_listened_book(id):
 		"id": id
 	}
 
+	if 'book_id' not in request.get_json():
+		return jsonify({'message': 'Book id missing'}), 401
+
+	request_data = request.get_json()
 	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
-	url_io_emp = url_io + '/employee/' + id + '/books/listened'
-	response = requests.post(url_io_emp, headers=request.headers, data=request.data)
+	url_io_book = url_io + '/employee/' + id + '/books'
+	response = requests.get(url_io_book, headers=request.headers, data=request.data)
+	if response.status_code != 200:
+		return jsonify({'message': response.text}), 401
+
+	get_data = response.json()
+
+	if request_data['book_id'] not in get_data['active_books']:
+		return jsonify({'message': 'Book is not active'}), 401
+
+	url_io_book = url_io + '/employee/' + id + '/books/active'
+	response = requests.delete(url_io_book, headers=request.headers, data=request.data)
+	if response.status_code != 200:
+		return jsonify({'message': response.text}), 401
+
+	url_io_book = url_io + '/employee/' + id + '/books/listened'
+	response = requests.post(url_io_book, headers=request.headers, data=request.data)
 	return jsonify({'message': response.text}), response.status_code
 
 
