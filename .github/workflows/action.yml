@@ -20,4 +20,4 @@ jobs:
         run: |
           docker build -t bl .
           docker tag bl andreiionut1411/business_logic:latest
-          docker pushandreiionut1411/business_logic:latest
+          docker push andreiionut1411/business_logic:latest
