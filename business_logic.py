@@ -7,8 +7,8 @@ import requests
 import json
 
 app = Flask(__name__)
-url_auth = "http://auth:6000/auth/decode_token"  # Replace with your actual server URL
-url_io = "http://io:5000/io"  # Replace with your actual server URL
+url_auth = "http://auth:6000/auth/decode_token"
+url_io = "http://io:5000/io"
 
 
 @app.route("/bl/company", methods=["POST"])
