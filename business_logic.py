@@ -417,7 +417,7 @@ def get_all_books():
 
 	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 404
+		return jsonify({'message': response.text}), 401
 
 	url_io_book = url_io + '/book'
 	response = requests.get(url_io_book, headers=request.headers, data=request.data)
