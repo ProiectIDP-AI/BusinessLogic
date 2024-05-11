@@ -18,6 +18,18 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t bl .
-          docker tag bl andreiionut1411/business_logic:latest
-          docker push andreiionut1411/business_logic:latest
+          docker build -t auth .
+          docker tag auth andreiionut1411/auth:latest
+          docker push andreiionut1411/auth:latest
+
+  deploy_service:
+    name: Deploy Service
+    runs-on: ubuntu-latest
+    needs: docker_build
+    steps:
+      - name: Install Curl
+        run: sudo apt-get install curl -y
+
+      - name: Trigger Deployment
+        run: |
+          curl -XPOST http://ip172-18-0-117-covjt2gl2o90008hp42g-9000.direct.labs.play-with-docker.com/api/webhooks/f4540c8d-6004-4401-926b-9f6474c4c0ba
