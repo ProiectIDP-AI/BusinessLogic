@@ -18,7 +18,7 @@ def post_comp():
 		"id": "None"  # Replace with your actual id or 'None'
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.json()}), 401
 
@@ -48,7 +48,7 @@ def get_company(company_id):
 		"id": company_id  # Replace with your actual id or 'None'
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.json()}), 401
 
@@ -139,7 +139,7 @@ def get_employee(id):
 		"id": id
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -155,7 +155,7 @@ def get_all_employees():
 		"id": "None"
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -171,7 +171,7 @@ def get_employees_for_comp(company_id):
 		"id": company_id
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -194,7 +194,7 @@ def update_employee(id):
 		"id": id
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -210,7 +210,7 @@ def delete_employee(id):
 		"id": "None"
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -229,7 +229,7 @@ def add_active_book(id):
 	if 'book_id' not in request.get_json():
 		return jsonify({'message': 'Book id missing'}), 401
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -253,7 +253,7 @@ def add_wishlist_book(id):
 	if 'book_id' not in request.get_json():
 		return jsonify({'message': 'Book id missing'}), 401
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -273,7 +273,7 @@ def add_listened_book(id):
 		return jsonify({'message': 'Book id missing'}), 401
 
 	request_data = request.get_json()
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -304,7 +304,7 @@ def get_employee_books(id):
 		"id": id
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -321,7 +321,7 @@ def delete_active_book(id):
 		"id": id
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -337,7 +337,7 @@ def delete_wishlist_book(id):
 		"id": id
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -352,7 +352,7 @@ def delete_listened_book(id):
 		"id": id
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -383,7 +383,7 @@ def post_book():
 		"id": "None"
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -399,7 +399,7 @@ def get_book(book_id):
 		"id": "None"
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -415,7 +415,7 @@ def get_all_books():
 		"id": "None"
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -431,7 +431,7 @@ def update_book(book_id):
 		"id": "None"
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
@@ -448,7 +448,7 @@ def delete_book(book_id):
 		"id": "None"
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
