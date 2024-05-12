@@ -20,7 +20,7 @@ def post_comp():
 
 	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	payload = request.get_json()
 
@@ -38,7 +38,7 @@ def post_comp():
 
 	url_io_company = url_io + '/company'
 	response = requests.post(url_io_company, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/company/<string:company_id>', methods=['GET'])
@@ -50,11 +50,11 @@ def get_company(company_id):
 
 	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_company = url_io + '/company/' + company_id
 	response = requests.get(url_io_company, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 # Get all companies
@@ -67,11 +67,11 @@ def get_all_companies():
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_company = url_io + '/company'
 	response = requests.get(url_io_company, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 # Update company by ID
@@ -82,13 +82,13 @@ def update_company(company_id):
 		"id": "None"
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_company = url_io + '/company/' + company_id
 	response = requests.put(url_io_company, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 # Delete company by ID
@@ -99,13 +99,13 @@ def delete_company(company_id):
 		"id": "None"
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_company = url_io + '/company/' + company_id
 	response = requests.delete(url_io_company, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee', methods=['POST'])
@@ -123,7 +123,7 @@ def create_employee():
 		"id": payload['id_comp']
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
