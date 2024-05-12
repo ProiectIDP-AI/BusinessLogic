@@ -7,8 +7,8 @@ import requests
 import json
 
 app = Flask(__name__)
-url_auth = "http://auth:6000/auth/decode_token"
-url_io = "http://io:5000/io"
+url_auth = "http://auth:6000/auth/decode_token"  # Replace with your actual server URL
+url_io = "http://io:5000/io"  # Replace with your actual server URL
 
 
 @app.route("/bl/company", methods=["POST"])
@@ -65,7 +65,7 @@ def get_all_companies():
 		"id": "None"  # Replace with your actual id or 'None'
 	}
 
-	response = requests.post(url_auth, headers=request.headers, data=json.dumps(data))
+	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
 		return jsonify({'message': response.text}), 401
 
