@@ -125,11 +125,11 @@ def create_employee():
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee'
 	response = requests.post(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee/<string:id>', methods=['GET'])
@@ -141,11 +141,11 @@ def get_employee(id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee/' + id
 	response = requests.get(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee', methods=['GET'])
@@ -157,11 +157,11 @@ def get_all_employees():
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee'
 	response = requests.get(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee/company/<string:company_id>', methods=["GET"])
@@ -173,7 +173,7 @@ def get_employees_for_comp(company_id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee'
 	response = requests.get(url_io_emp, headers=request.headers, data=request.data)
@@ -196,11 +196,11 @@ def update_employee(id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee/' + id
 	response = requests.put(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee/<string:id>', methods=['DELETE'])
@@ -212,11 +212,11 @@ def delete_employee(id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee/' + id
 	response = requests.delete(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee/<string:id>/books/active', methods=['POST'])
@@ -231,16 +231,16 @@ def add_active_book(id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_book = url_io + '/employee/' + id + '/books/wishlist'
 	response = requests.delete(url_io_book, headers=request.headers, data=request.data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_book = url_io + '/employee/' + id + '/books/active'
 	response = requests.post(url_io_book, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee/<string:id>/books/wishlist', methods=['POST'])
@@ -255,11 +255,11 @@ def add_wishlist_book(id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee/' + id + '/books/wishlist'
 	response = requests.post(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee/<string:id>/books/listened', methods=['POST'])
@@ -275,12 +275,12 @@ def add_listened_book(id):
 	request_data = request.get_json()
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_book = url_io + '/employee/' + id + '/books'
 	response = requests.get(url_io_book, headers=request.headers, data=request.data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	get_data = response.json()
 
@@ -290,11 +290,11 @@ def add_listened_book(id):
 	url_io_book = url_io + '/employee/' + id + '/books/active'
 	response = requests.delete(url_io_book, headers=request.headers, data=request.data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_book = url_io + '/employee/' + id + '/books/listened'
 	response = requests.post(url_io_book, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee/<string:id>/books', methods=['GET'])
@@ -306,11 +306,11 @@ def get_employee_books(id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee/' + id + '/books'
 	response = requests.get(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 
@@ -323,11 +323,11 @@ def delete_active_book(id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee/' + id + '/books/active'
 	response = requests.delete(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/employee/<string:id>/books/wishlist', methods=['DELETE'])
@@ -339,11 +339,11 @@ def delete_wishlist_book(id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee/' + id + '/books/wishlist'
 	response = requests.delete(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 @app.route('/bl/employee/<string:id>/books/listened', methods=['DELETE'])
 def delete_listened_book(id):
@@ -354,11 +354,11 @@ def delete_listened_book(id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_emp = url_io + '/employee/' + id + '/books/listened'
 	response = requests.delete(url_io_emp, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 @app.route("/bl/book", methods=["POST"])
 def post_book():
@@ -385,11 +385,11 @@ def post_book():
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_book = url_io + '/book'
 	response = requests.post(url_io_book, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/book/<string:book_id>', methods=['GET'])
@@ -401,11 +401,11 @@ def get_book(book_id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_book = url_io + '/book/' + book_id
 	response = requests.get(url_io_book, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/book', methods=['GET'])
@@ -417,11 +417,11 @@ def get_all_books():
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_book = url_io + '/book'
 	response = requests.get(url_io_book, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 @app.route('/bl/book/<string:book_id>', methods=['PUT'])
@@ -433,11 +433,11 @@ def update_book(book_id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_book = url_io + '/book/' + book_id
 	response = requests.put(url_io_book, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 
@@ -450,11 +450,11 @@ def delete_book(book_id):
 
 	response = requests.post(url_auth, headers=request.headers, json=data)
 	if response.status_code != 200:
-		return jsonify({'message': response.text}), 401
+		return jsonify({'message': response.json()}), 401
 
 	url_io_book = url_io + '/book/' + book_id
 	response = requests.delete(url_io_book, headers=request.headers, data=request.data)
-	return jsonify({'message': response.text}), response.status_code
+	return jsonify({'message': response.json()}), response.status_code
 
 
 if __name__ == '__main__':
